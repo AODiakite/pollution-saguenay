@@ -4,6 +4,7 @@
 <title>Air du Saguenay</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>try{var t=localStorage.getItem('theme-visuel-saguenay');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <style>
 /* Mise en page : une rangée de filtres, puis quatre panneaux empilés (courbes, disponibilité, saisonnalité, tableau et notes).
    Palette catégorielle validée (7 stations, ordre fixe), rampe séquentielle bleue pour les cartes thermiques. */
@@ -130,9 +131,16 @@ details.card[open] > summary { margin-bottom: 4px; }
 @media (prefers-reduced-motion: no-preference) {
   .seg button, .chip { transition: background-color 0.12s; }
 }
+
+.theme-switch { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin: -8px 0 12px; }
 </style>
 
 <div class="wrap">
+  <div class="theme-switch">
+    <span class="flabel" id="l-theme">Thème</span>
+    <div class="seg" id="f-theme" role="group" aria-labelledby="l-theme"></div>
+  </div>
+
   <h1>SO₂ et PM2.5 au Saguenay</h1>
   <p class="lede">Mesures horaires des stations du Saguenay, de 1975 à 2025. Chaque courbe est une moyenne calculée sur les heures valides d’une station. Passez la souris sur un graphique pour lire les valeurs.</p>
   <p class="src">Source : <a href="https://www.donneesquebec.ca/recherche/dataset/rsqaq-donnees-horaires-continues" target="_blank" rel="noopener">RSQAQ – Données horaires continues</a> (Données Québec, <a href="https://creativecommons.org/licenses/by/4.0/deed.fr" target="_blank" rel="noopener">CC-BY 4.0</a>). Extraction du <span id="extraction"></span>. Heures en heure normale de l’Est. <a href="#sources">Toutes les sources</a>.</p>
@@ -1096,6 +1104,36 @@ const DATA = {"stations":[{"id":"02016","nom":"Parc Powell","secteur":"Jonqui\u0
   }).observe($('.wrap'));
 })();
 </script>
-
+<script>
+(function () {
+  var cle = 'theme-visuel-saguenay';
+  var host = document.getElementById('f-theme');
+  var choix = [
+    ['auto', 'Auto', 'Suit le réglage clair ou sombre de votre navigateur'],
+    ['light', 'Clair', 'Fond clair'],
+    ['dark', 'Sombre', 'Fond sombre'],
+  ];
+  function lire() {
+    try { var t = localStorage.getItem(cle); return t === 'light' || t === 'dark' ? t : 'auto'; } catch (e) { return 'auto'; }
+  }
+  function dessiner(t) {
+    host.replaceChildren();
+    choix.forEach(function (c) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.textContent = c[1]; b.title = c[2];
+      b.setAttribute('aria-pressed', String(c[0] === t));
+      b.addEventListener('click', function () { appliquer(c[0]); });
+      host.appendChild(b);
+    });
+  }
+  function appliquer(t) {
+    if (t === 'auto') document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', t);
+    try { if (t === 'auto') localStorage.removeItem(cle); else localStorage.setItem(cle, t); } catch (e) {}
+    dessiner(t);
+  }
+  dessiner(lire());
+})();
+</script>
 </body>
 </html>
