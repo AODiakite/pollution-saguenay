@@ -6,7 +6,7 @@ Ouvrir la page : https://aodiakite.github.io/pollution-saguenay/
 
 ## Ce que contient ce dépôt
 
-- `index.html` : la page complète (un seul fichier, sans dépendance externe). Les moyennes journalières y sont incluses.
+- `index.html` : la page complète (un seul fichier). Les moyennes journalières y sont incluses. Les graphiques utilisent [Plotly.js](https://plotly.com/javascript/) 3.1.0, chargé depuis cdnjs : une connexion internet est nécessaire pour les afficher.
 
 Il n'y a aucune donnée de santé dans ce dépôt, seulement des données de pollution publiques.
 
